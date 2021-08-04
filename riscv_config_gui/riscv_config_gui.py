@@ -14,7 +14,6 @@ import runpy
 import riscv_config.checker as riscv_config
 import riscv_config_gui.utils as utils
 import riscv_config_gui.page2 as page2
-from riscv_config_gui.consts import *
 from riscv_config_gui.widgets import *
 import ruamel
 from ruamel.yaml import YAML
