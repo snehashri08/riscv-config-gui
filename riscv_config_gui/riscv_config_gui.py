@@ -7,6 +7,8 @@ from tkinter import ttk
 import tkinter.font as font
 from tkinter import scrolledtext
 import tkinter.messagebox
+from tkinter import filedialog
+from tkinter.filedialog import askopenfile
 from tkinter.tix import *
 import runpy
 import riscv_config.checker as riscv_config
@@ -14,11 +16,18 @@ import riscv_config_gui.utils as utils
 import riscv_config_gui.page2 as page2
 from riscv_config_gui.consts import *
 from riscv_config_gui.widgets import *
+import ruamel
+from ruamel.yaml import YAML
+import yaml as pyyaml
+import re
+yaml = YAML(typ="rt")
+yaml.default_flow_style = False
+yaml.allow_unicode = True
 
     
-global isa_file
-global ispec, w_dir
-global T1, T2, isa_var, user_spec_var, pmp_var, pa_var, s_xlen_var, h
+global isa_checked_file
+global ispec, w_dir, isa_yaml
+global t1_var, t2_var, isa_var, user_spec_var, pmp_var, pa_var, s_xlen_var, h, T1, T2
 global root
 
 
@@ -26,27 +35,63 @@ global root
 
 def nextPage():
     root.destroy()
-    page2.gui_page2(os.path.abspath(isa_file), w_dir)
+    page2.gui_page2(os.path.abspath(isa_checked_file), w_dir)
+    
+def open_ispec():
+   global ispec, isa_yaml
+   ispec = filedialog.askopenfile(mode='r', filetypes=[('YAML Files', '*.yaml')])
+   file = ispec.read()
+   isa_yaml = yaml.load(file)
+   isa_var.set(isa_yaml['hart0']['ISA'])
+   if 'User_Spec_Version' in isa_yaml['hart0'].keys():
+       user_spec_var.set( isa_yaml['hart0']['User_Spec_Version'] )
+   if 'pmp_granularity' in isa_yaml['hart0'].keys():
+       pmp_var.set(isa_yaml['hart0']['pmp_granularity'])
+   if 'custom_exceptions' in isa_yaml['hart0'].keys():
+       custom_e=[]
+       for value in isa_yaml['hart0']['custom_exceptions']:
+           custom_e.append(dict(value))
+       t1_var.set(custom_e)
+       button7_ttp = CreateToolTip(T1, custom_e)
+   if 'custom_interrupts' in isa_yaml['hart0'].keys():
+       custom_i=[]
+       for value in isa_yaml['hart0']['custom_interrupts']:
+           custom_i.append(dict(value))
+       t2_var.set(custom_i)
+       button7_ttp = CreateToolTip(T2, custom_i)
+   pa_var.set(isa_yaml['hart0']['physical_addr_sz'])
+   s_xlen_var.set(isa_yaml['hart0']['supported_xlen'][0])
+   ispec.close()
+   
+   
     
 def submit():
-    global isa_file
-    f = open(ispec, "w")
-    yaml_str=''
-    yaml_str+=const1.format( T1.get(1.0, "end-1c"), T2.get(1.0, "end-1c"), isa_var.get(), "'"+user_spec_var.get()+"'", pmp_var.get(), pa_var.get(), s_xlen_var.get())
-    f.write(yaml_str)
-    f.close()
-    isa_file = riscv_config.check_isa_specs(os.path.realpath(f.name), w_dir, True)
+    global isa_checked_file
+    isa_yaml['hart0']['ISA']=isa_var.get()
+    if 'User_Spec_Version' in isa_yaml['hart0'].keys():
+       isa_yaml['hart0']['User_Spec_Version']=user_spec_var.get()
+    if 'pmp_granularity' in isa_yaml['hart0'].keys():
+       isa_yaml['hart0']['pmp_granularity']=int(pmp_var.get())
+    isa_yaml['hart0']['physical_addr_sz']=int(pa_var.get())
+    isa_yaml['hart0']['supported_xlen'][0]=int(s_xlen_var.get())
+    f=open(os.path.realpath(ispec.name), 'w')
+    utils.dump_yaml(isa_yaml, f)
+    isa_checked_file = riscv_config.check_isa_specs(os.path.realpath(ispec.name), w_dir, True)
 
-def first_page(isa_spec, work_dir):
-       global ispec, w_dir
-       global T1, T2, isa_var, user_spec_var, pmp_var, pa_var, s_xlen_var, root, h
-       ispec=isa_spec
+def first_page(work_dir):
+       global w_dir
+       global t1_var, t2_var, isa_var, user_spec_var, pmp_var, pa_var, s_xlen_var, root, h, T1, T2
        w_dir=work_dir
        root = tk.Tk()
        root.title("RISCV-CONFIG")
        root.geometry('1000x1000')
-       T1 = tk.Text(root, height = 12, width = 52)
-       T2 = tk.Text(root, height = 4, width = 52)
+       t1_var=tk.StringVar()
+       t2_var=tk.StringVar()
+       T1 = tk.Entry(root, textvariable = t1_var, width = 100)
+       T2 = tk.Entry(root, textvariable = t2_var, width = 100)
+       Label = tk.Label(root, text="Click the Button to browse the Files", font=('Georgia 13'))
+       B=tk.Button(root, text="Browse", command=open_ispec, fg='red')
+
        label = tk.Label(root, text ="INITIAL YAML FIELDS ", font=("Arial", 16))
        a = tk.Label(root, text="ISA:", font=("Arial", 16))
        isa_var= tk.StringVar()
@@ -101,33 +146,29 @@ def first_page(isa_spec, work_dir):
        button6_ttp = CreateToolTip(Next, \
 	    'Navigates to the next page with the csrs corresponding to the enabled extensions  ')
        label.grid(column=0, row=0)
-       a.grid(column=0, row=1,sticky='NW')
-       entry1.grid(column=1, row=1, sticky='NW')
-       b.grid(column=0, row=2,sticky='NW')
-       entry2.grid(column=1, row=2, sticky='NW')
-       c.grid(column=0, row=3,sticky='NW')
-       entry3.grid(column=1, row=3, sticky='NW')
-       d.grid(column=0, row=4,sticky='NW')
-       entry4.grid(column=1, row=4, sticky='NW')
-       e.grid(column=0, row=5,sticky='NW')
-       entry5.grid(column=1, row=5, sticky='NW')
-       f.grid(column=0, row=6,sticky='NW')
-
+       Label.grid(column=0, row=1)
+       B.grid(column=1, row=1, sticky='NW')
+       a.grid(column=0, row=2,sticky='NW')
+       entry1.grid(column=1, row=2, sticky='NW')
+       b.grid(column=0, row=3,sticky='NW')
+       entry2.grid(column=1, row=3, sticky='NW')
+       c.grid(column=0, row=4,sticky='NW')
+       entry3.grid(column=1, row=4, sticky='NW')
+       d.grid(column=0, row=5,sticky='NW')
+       entry4.grid(column=1, row=5, sticky='NW')
+       e.grid(column=0, row=6,sticky='NW')
+       entry5.grid(column=1, row=6, sticky='NW')
+       f.grid(column=0, row=7,sticky='NW')
 				
-       T1.insert(tk.END, custom_exceptions)
-       T1.grid(column=0, row=7,sticky='NW')
-
-       g.grid(column=0, row=8,sticky='NW')
-
-				
-       T2.insert(tk.END, custom_interrupts)
-       T2.grid(column=0, row=9,sticky='NW')
-       MyButton1.grid(column=1, row=10) 
-       Next.grid(column=1, row=11)
+       T1.grid(column=0, row=8,sticky='NW')
+       g.grid(column=0, row=9,sticky='NW')
+       T2.grid(column=0, row=10,sticky='NW')
+       MyButton1.grid(column=1, row=11) 
+       Next.grid(column=1, row=12)
        button = tk.Button(root, text="QUIT", fg="red", command=quit)
-       button.grid(column=1, row=12)
+       button.grid(column=1, row=13)
        h = tk.scrolledtext.ScrolledText(root)
-       h.grid(column=1, row=13)
+       h.grid(column=1, row=14)
        text_handler = TextHandler(h)
        # Add the handler to logger
        logger = logging.getLogger()

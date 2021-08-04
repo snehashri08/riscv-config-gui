@@ -15,13 +15,6 @@ def main():
     # Set up the parser
     parser = utils.riscv_config_cmdline_args()
     args = parser.parse_args()
-    if len(sys.argv) < 2:
-        parser.print_help()
-        raise SystemExit
-    if (args.version):
-        print('RISCV-CONFIG: RISC-V Configuration Validator GUI')
-        print('Version: ' + version)
-        return 0
 
     # Set up the logger
     utils.setup_logging(args.verbose)
@@ -37,10 +30,8 @@ def main():
     if not os.path.exists(work_dir):
         logger.debug('Creating new work directory: ' + work_dir)
         os.mkdir(work_dir)
-
     try:
-        if args.isa_spec is not None:
-           gui.first_page(os.path.abspath(args.isa_spec), work_dir)
+       gui.first_page(work_dir)
     except ValidationError as msg:
         logger.error(str(msg))
         return 1

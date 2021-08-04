@@ -107,17 +107,11 @@ def riscv_config_cmdline_args():
     parser = argparse.ArgumentParser(
         formatter_class=SortingHelpFormatter,
         prog="riscv_config",
-        description="RISC-V Configuration Validator")
+        description="RISC-V Configuration Validator GUI")
     parser.add_argument('--version',
                         '-v',
                         help='Print version of RISCV-CONFIG being used',
                         action='store_true')
-    parser.add_argument('--isa_spec',
-                        '-ispec',
-                        type=str,
-                        metavar='YAML',
-                        default=None,
-                        help='The YAML which contains the ISA specs.')
     parser.add_argument(
         '--work_dir',
         type=str,

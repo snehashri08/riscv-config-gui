@@ -72,7 +72,10 @@ def update_fields():
     if node == 'type':
       update=eval(update)
     elif node == 'implemented':
-       update=bool(update)
+       if update=='True':
+          update=True
+       else:
+          update=False
     elif update == 'None':
          update=None
     if subfield != None:
@@ -278,16 +281,22 @@ def page16(canvas):
     print_csrs(scrollable_frame, 37, 46, 'U')
     if not check_n:
        tk.Label(scrollable_frame, text='User-level Interrupts(N) extension disabled',font=("Arial", 18), fg='red').grid(row=1, column=1)
-    button = tk.Button(scrollable_frame, text="UPDATE", fg="red", command=update_fields)
-    button.grid(row=0, column=9, sticky='N')
-    h = tk.scrolledtext.ScrolledText(scrollable_frame, width=40, height=10, state='disabled')
-    h.grid(column=10, row=0, sticky='NW')
+    button = tk.Button(scrollable_frame, text="TO FINAL RUN PAGE", fg="red", command=changepage)
+    tk.Button(scrollable_frame, text = 'Prev page 15', command = changetoprevpage).grid(row = 0, column=9, sticky='NW')
+    button.grid(row=0, column=10, sticky='N')    
+    
+def page17(canvas):
+    scrollable_frame = tk.Frame(canvas)
+    scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all") ))
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw" )
+    canvas.configure(yscrollcommand=scrollbar.set )
+    h = tk.scrolledtext.ScrolledText(scrollable_frame, state='disabled')
+    h.grid(column=1, row=0, sticky='NW')
     text_handler = TextHandler(h)
     # Add the handler to logger
     logger = logging.getLogger()
     logger.addHandler(text_handler)
-    tk.Button(scrollable_frame, text = 'Prev page 15', command = changetoprevpage).grid(row = 0, column=11, sticky='NW')
-    tk.Button(scrollable_frame, text = 'RUN \n IN \n RISCV-CONFIG', command = cli, fg='red', height=10).grid(row = 0, column=12, sticky='NW')
+    tk.Button(scrollable_frame, text = 'RUN \n IN \n RISCV-CONFIG', command = cli, fg='red', height=10).grid(row = 0, column=0, sticky='NW')
     
 
 def changepage():
@@ -340,6 +349,9 @@ def changepage():
     elif pagenum==15:
         page16(canvas)
         pagenum=16
+    elif pagenum==16:
+        page17(canvas)
+        pagenum=17
  
  
 def changetoprevpage():
