@@ -10,8 +10,9 @@ import ruamel
 from riscv_config_gui.widgets import *
 from ruamel.yaml import YAML
 import yaml as pyyaml
-import riscv_config.utils as utils
+import riscv_config_gui.utils as utils
 import riscv_config.checker as riscv_config
+import riscv_config_gui.riscv_config_gui as gui
 import re
 yaml = YAML(typ="rt")
 yaml.default_flow_style = False
@@ -25,7 +26,7 @@ global pagenum, canvas, scrollbar
 global checkvar
 checkvar=[]
 global check_s, check_n, check_u
-global ispec, wdir
+global ispec, wdir, root
 
 
 def cli():
@@ -130,7 +131,8 @@ def page1(canvas):
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw" )
     canvas.configure(yscrollcommand=scrollbar.set )
     print_csrs(scrollable_frame, 0, 10, 'M')
-    tk.Button(scrollable_frame, text = 'To page 2', command = changepage).grid(row = 0, column=10, sticky='NW')        
+    tk.Button(scrollable_frame, text = 'Back to Home page', command = changetoprevpage).grid(row = 0, column=10, sticky='NW')
+    tk.Button(scrollable_frame, text = 'To page 2', command = changepage).grid(row = 0, column=11, sticky='NW')        
     
     
 def page2(canvas):
@@ -358,6 +360,9 @@ def changetoprevpage():
     global pagenum, canvas
     for widget in canvas.winfo_children():
         widget.destroy()
+    if pagenum==1:
+       root.destroy()
+       gui.first_page(wdir)
     if pagenum==2 :
         page1(canvas)
         pagenum = 1
@@ -407,7 +412,7 @@ def changetoprevpage():
 def gui_page2(isa_spec, work_dir): 
     global canvas, scrollbar, pagenum
     global ispec, wdir
-    global check_s, check_n, check_u
+    global check_s, check_n, check_u, root
     ispec=isa_spec
     wdir=work_dir       
     root = tk.Tk()

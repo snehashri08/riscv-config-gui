@@ -70,9 +70,9 @@ def submit():
     if 'User_Spec_Version' in isa_yaml['hart0'].keys():
        isa_yaml['hart0']['User_Spec_Version']=user_spec_var.get()
     if 'pmp_granularity' in isa_yaml['hart0'].keys():
-       isa_yaml['hart0']['pmp_granularity']=int(pmp_var.get())
-    isa_yaml['hart0']['physical_addr_sz']=int(pa_var.get())
-    isa_yaml['hart0']['supported_xlen'][0]=int(s_xlen_var.get())
+       isa_yaml['hart0']['pmp_granularity']=pmp_var.get()
+    isa_yaml['hart0']['physical_addr_sz']=pa_var.get()
+    isa_yaml['hart0']['supported_xlen'][0]=s_xlen_var.get()
     f=open(os.path.realpath(ispec.name), 'w')
     utils.dump_yaml(isa_yaml, f)
     isa_checked_file = riscv_config.check_isa_specs(os.path.realpath(ispec.name), w_dir, True)
@@ -109,21 +109,21 @@ def first_page(work_dir):
 	    ' Version number of User/Non-priveleged ISA specification as string.  ')
 
        c = tk.Label(root, text="supported_xlen:", font=("Arial", 16))
-       s_xlen_var= tk.StringVar()
+       s_xlen_var= tk.IntVar()
        s_xlen=s_xlen_var.get()
        entry3 = tk.Entry (root, textvariable = s_xlen_var, font=('calibre',10,'normal')) 
        button3_ttp = CreateToolTip(c, \
 	    ' list of supported xlen on the target  ')
 	    
        d = tk.Label(root, text="physical_addr_sz:", font=("Arial", 16))
-       pa_var= tk.StringVar()
+       pa_var= tk.IntVar()
        pa=pa_var.get()
        entry4 = tk.Entry (root, textvariable = pa_var, font=('calibre',10,'normal')) 
        button4_ttp = CreateToolTip(d, \
 	    ' size of the physical address  ')
 
        e = tk.Label(root, text="pmp_granularity:", font=("Arial", 16))
-       pmp_var= tk.StringVar()
+       pmp_var= tk.IntVar()
        pmp=pmp_var.get()
        entry5 = tk.Entry (root, textvariable = pmp_var, font=('calibre',10,'normal')) 
        button4_ttp = CreateToolTip(e, \
@@ -159,15 +159,13 @@ def first_page(work_dir):
        entry5.grid(column=1, row=6, sticky='NW')
        f.grid(column=0, row=7,sticky='NW')
 				
-       T1.grid(column=0, row=8,sticky='NW')
-       g.grid(column=0, row=9,sticky='NW')
-       T2.grid(column=0, row=10,sticky='NW')
-       MyButton1.grid(column=1, row=11) 
-       Next.grid(column=1, row=12)
-       button = tk.Button(root, text="QUIT", fg="red", command=quit)
-       button.grid(column=1, row=13)
+       T1.grid(column=1, row=7,sticky='NW')
+       g.grid(column=0, row=8,sticky='NW')
+       T2.grid(column=1, row=8,sticky='NW')
+       MyButton1.grid(column=1, row=9) 
+       Next.grid(column=1, row=10)
        h = tk.scrolledtext.ScrolledText(root)
-       h.grid(column=1, row=14)
+       h.grid(column=1, row=11)
        text_handler = TextHandler(h)
        # Add the handler to logger
        logger = logging.getLogger()
