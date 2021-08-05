@@ -6,7 +6,7 @@ from riscv_config import __version__ as version
 import riscv_config.checker as checker
 import riscv_config_gui.utils as utils
 from riscv_config.errors import ValidationError
-import riscv_config_gui.riscv_config_gui as gui
+import riscv_config_gui.home_page as gui
 
 def main():
     '''

@@ -12,7 +12,7 @@ from ruamel.yaml import YAML
 import yaml as pyyaml
 import riscv_config_gui.utils as utils
 import riscv_config.checker as riscv_config
-import riscv_config_gui.riscv_config_gui as gui
+import riscv_config_gui.home_page as gui
 import re
 yaml = YAML(typ="rt")
 yaml.default_flow_style = False
