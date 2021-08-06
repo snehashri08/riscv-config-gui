@@ -5,7 +5,7 @@ RISC-V Configuration Validator GUI
 
 LICENSE: BSD-3 Clause.
 
-Latest Documentation of RISCV-Config: `HTML <https://riscv-config.readthedocs.io/>`_
+Latest Documentation of [RISCV-Config](<https://riscv-config.readthedocs.io/>).
 
 To run the gui:
 
