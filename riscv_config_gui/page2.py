@@ -129,7 +129,7 @@ def page1(canvas):
     scrollable_frame = tk.Frame(canvas)
     scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all") ))
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw" )
-    canvas.configure(yscrollcommand=scrollbar.set )
+    canvas.configure(yscrollcommand=scrollbar.set)
     print_csrs(scrollable_frame, 0, 10, 'M')
     tk.Button(scrollable_frame, text = 'Back to Home page', command = changetoprevpage).grid(row = 0, column=10, sticky='NW')
     tk.Button(scrollable_frame, text = 'To page 2', command = changepage).grid(row = 0, column=11, sticky='NW')        
@@ -416,7 +416,6 @@ def gui_page2(isa_spec, work_dir):
     ispec=isa_spec
     wdir=work_dir       
     root = tk.Tk()
-    root['bg']='#fff'
     container = tk.Frame(root)
     canvas = tk.Canvas(container)
     scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)

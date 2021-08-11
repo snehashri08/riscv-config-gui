@@ -84,64 +84,65 @@ def first_page(work_dir):
        root = tk.Tk()
        root.title("RISCV-CONFIG")
        root.geometry('1000x1000')
+       root.configure(bg='#2c2e2e')
        t1_var=tk.StringVar()
        t2_var=tk.StringVar()
        T1 = tk.Entry(root, textvariable = t1_var, width = 100)
        T2 = tk.Entry(root, textvariable = t2_var, width = 100)
-       Label = tk.Label(root, text="Click the Button to browse the Files", font=('Georgia 13'))
+       Label = tk.Label(root, text="Click the Button to browse the Files", font=('Arial 13 bold'), fg='#b4c2c2', bg='#2c2e2e')
        B=tk.Button(root, text="Browse", command=open_ispec, fg='red')
 
-       label = tk.Label(root, text ="INITIAL YAML FIELDS ", font=("Arial", 16))
-       a = tk.Label(root, text="ISA:", font=("Arial", 16))
+       label = tk.Label(root, text ="INITIAL YAML FIELDS ", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
+       a = tk.Label(root, text="ISA:", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
        isa_var= tk.StringVar()
        isa=isa_var.get()
-       entry1 = tk.Entry (root, textvariable = isa_var, font=('calibre',10,'normal'), width=50) 
+       entry1 = tk.Entry (root, textvariable = isa_var, font=('Arial',10,'normal'), width=50) 
        button1_ttp = CreateToolTip(a, \
 	    ' Takes input a string representing the ISA supported by the implementation. All extension names '
 	    ' (other than Zext) should be mentioned in upper-case. Z extensions should begin with an upper-case '
 	    ' ''Z'' followed by lower-case extension name (without Camel casing) ')
-       b = tk.Label(root, text="User_Spec_version:", font=("Arial", 16))
+       b = tk.Label(root, text="User_Spec_version:", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
        user_spec_var= tk.StringVar()
        user_spec=user_spec_var.get()
-       entry2 = tk.Entry (root, textvariable = user_spec_var, font=('calibre',10,'normal'))
+       entry2 = tk.Entry (root, textvariable = user_spec_var, font=('Arial',10,'normal'))
        user_spec_var.set('2.3') 
        button2_ttp = CreateToolTip(b, \
 	    ' Version number of User/Non-priveleged ISA specification as string.  ')
 
-       c = tk.Label(root, text="supported_xlen:", font=("Arial", 16))
+       c = tk.Label(root, text="supported_xlen:", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
        s_xlen_var= tk.IntVar()
        s_xlen=s_xlen_var.get()
-       entry3 = tk.Entry (root, textvariable = s_xlen_var, font=('calibre',10,'normal')) 
+       entry3 = tk.Entry (root, textvariable = s_xlen_var, font=('Arial',10,'normal')) 
        button3_ttp = CreateToolTip(c, \
 	    ' list of supported xlen on the target  ')
 	    
-       d = tk.Label(root, text="physical_addr_sz:", font=("Arial", 16))
+       d = tk.Label(root, text="physical_addr_sz:", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
        pa_var= tk.IntVar()
        pa=pa_var.get()
-       entry4 = tk.Entry (root, textvariable = pa_var, font=('calibre',10,'normal')) 
+       entry4 = tk.Entry (root, textvariable = pa_var, font=('Arial',10,'normal')) 
        button4_ttp = CreateToolTip(d, \
 	    ' size of the physical address  ')
 
-       e = tk.Label(root, text="pmp_granularity:", font=("Arial", 16))
+       e = tk.Label(root, text="pmp_granularity:", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
        pmp_var= tk.IntVar()
        pmp=pmp_var.get()
-       entry5 = tk.Entry (root, textvariable = pmp_var, font=('calibre',10,'normal')) 
+       entry5 = tk.Entry (root, textvariable = pmp_var, font=('Arial',10,'normal')) 
        button4_ttp = CreateToolTip(e, \
 	    ' Granularity of pmps  ')
 	    
-       f = tk.Label(root, text="custom_exceptions:", font=("Arial", 16))
+       f = tk.Label(root, text="custom_exceptions:", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
        button5_ttp = CreateToolTip(f, \
 	    ' list of custom exceptions implemented  ')
        
 	     
-       g = tk.Label(root, text="custom_interrupts:", font=("Arial", 16))
+       g = tk.Label(root, text="custom_interrupts:", font=("Arial", 16, 'bold'), fg='#b4c2c2', bg='#2c2e2e')
        button5_ttp = CreateToolTip(g, \
 	    ' list of custom interrupts implemented  ')
 	 
-       MyButton1 = tk.Button(root, text="Submit", width=10, command=submit)
+       MyButton1 = tk.Button(root, text="SUBMIT", width=10, fg='red', font=("Arial", 12, 'bold'), command=submit)
        button5_ttp = CreateToolTip(MyButton1, \
 	    ' To create the default input ISA yaml and then run in riscv-config package  ')
-       Next = tk.Button(root, text="Next Page", command= nextPage)
+       Next = tk.Button(root, text="NEXT PAGE", fg='red', font=("Arial", 12, 'bold'), command= nextPage)
        button6_ttp = CreateToolTip(Next, \
 	    'Navigates to the next page with the csrs corresponding to the enabled extensions  ')
        label.grid(column=0, row=0)
@@ -166,6 +167,7 @@ def first_page(work_dir):
        Next.grid(column=1, row=10)
        h = tk.scrolledtext.ScrolledText(root)
        h.grid(column=1, row=11)
+       h.configure(bg='black', fg='green')
        text_handler = TextHandler(h)
        # Add the handler to logger
        logger = logging.getLogger()
