@@ -13,7 +13,9 @@ To run the gui:
 https://user-images.githubusercontent.com/39543372/132003388-80be8c6f-7b97-4724-8cb5-b9c0e6c2fcdf.mp4
 
 ```
-cd riscv-config-gui/PySimple
+cd riscv-config-gui
+pip install -r requirements.txt
+cd PySimple
 python3 -m riscv_config_gui.main 
 ```
 
