@@ -1,4 +1,4 @@
-RISCV-Config GUI
+ RISCV-Config GUI
 =================
 
 RISC-V Configuration Validator GUI
