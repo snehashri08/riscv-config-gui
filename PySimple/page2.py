@@ -4,6 +4,7 @@ import shutil
 import PySimpleGUI as sg
 import riscv_config.checker as riscv_config
 import riscv_config.utils as utils
+from collections import OrderedDict
 import ruamel
 from ruamel.yaml import YAML
 import yaml as pyyaml
@@ -45,7 +46,10 @@ def update_fields():
           if k in {'msb', 'lsb'}:
            update = int(update)
           elif k == 'type':
-           update=eval(update)
+           if update=='':
+              update=None
+           else:
+              update=eval(update)
           elif k == 'implemented':
             if update=='1':
               update=True
@@ -71,6 +75,11 @@ def inner(csr):
      else:
        _type=[[]]
   else:
+    for sub in sub_field:
+        if not isa_yaml['hart0'][csr][rvxlen][sub]['implemented']:
+           isa_yaml['hart0'][csr_name][rvxlen][sub]['type']= None
+    f=open(ispec, 'w')
+    utils.dump_yaml(isa_yaml, f)
     rr=[[sg.Column([[sg.Frame(sub, [[sg.Text(k), sg.InputText(isa_yaml['hart0'][csr][rvxlen][sub][k], key='-'+csr+'_'+sub+k+'-', tooltip=str(isa_yaml['hart0'][csr][rvxlen][sub][k])) ] for k in list(set(isa_yaml['hart0'][csr][rvxlen][sub].keys()) -set(['fields','type'])) ]+ [[sg.Text('type'), sg.InputText(eval(str(isa_yaml['hart0'][csr][rvxlen][sub]['type']).replace('ordereddict','dict')), key='-'+csr+'_'+sub+'type-', tooltip=str(isa_yaml['hart0'][csr][rvxlen][sub]['type'])) ]]) ]  for sub in sub_field] , pad=(0,0), scrollable=True, key = "Columnmmm", size=(400,500))]]
     _type= [[]]
   return [[sg.Text(k), sg.InputText(isa_yaml['hart0'][csr][k], key='-'+csr+'_'+k+'-', tooltip=str(isa_yaml['hart0'][csr][k])) ] for k in list(set(isa_yaml['hart0'][csr].keys())-set(['rv32', 'rv64'])) ] + rr +_type
