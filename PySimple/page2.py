@@ -74,14 +74,18 @@ def inner(csr):
         _type= [[sg.Text('type'), sg.InputText(eval(str(isa_yaml['hart0'][csr][rvxlen]['type']).replace('ordereddict','dict')), key='-'+csr+'_type-', tooltip=str(isa_yaml['hart0'][csr][rvxlen]['type'])) ]]
      else:
        _type=[[]]
-  else:
+  else :
     for sub in sub_field:
-        if not isa_yaml['hart0'][csr][rvxlen][sub]['implemented']:
+        if not isa_yaml['hart0'][csr][rvxlen][sub]['implemented'] and isa_yaml['hart0'][csr][rvxlen][sub]['shadow']==None:
            isa_yaml['hart0'][csr_name][rvxlen][sub]['type']= None
     f=open(ispec, 'w')
     utils.dump_yaml(isa_yaml, f)
-    rr=[[sg.Column([[sg.Frame(sub, [[sg.Text(k), sg.InputText(isa_yaml['hart0'][csr][rvxlen][sub][k], key='-'+csr+'_'+sub+k+'-', tooltip=str(isa_yaml['hart0'][csr][rvxlen][sub][k])) ] for k in list(set(isa_yaml['hart0'][csr][rvxlen][sub].keys()) -set(['fields','type'])) ]+ [[sg.Text('type'), sg.InputText(eval(str(isa_yaml['hart0'][csr][rvxlen][sub]['type']).replace('ordereddict','dict')), key='-'+csr+'_'+sub+'type-', tooltip=str(isa_yaml['hart0'][csr][rvxlen][sub]['type'])) ]]) ]  for sub in sub_field] , pad=(0,0), scrollable=True, key = "Columnmmm", size=(400,500))]]
-    _type= [[]]
+    if isa_yaml['hart0'][csr][rvxlen][sub]['shadow']==None:
+       rr=[[sg.Column([[sg.Frame(sub, [[sg.Text(k), sg.InputText(isa_yaml['hart0'][csr][rvxlen][sub][k], key='-'+csr+'_'+sub+k+'-', tooltip=str(isa_yaml['hart0'][csr][rvxlen][sub][k])) ] for k in list(set(isa_yaml['hart0'][csr][rvxlen][sub].keys()) -set(['fields','type'])) ]+ [[sg.Text('type'), sg.InputText(eval(str(isa_yaml['hart0'][csr][rvxlen][sub]['type']).replace('ordereddict','dict')), key='-'+csr+'_'+sub+'type-', tooltip=str(isa_yaml['hart0'][csr][rvxlen][sub]['type'])) ]]) ]  for sub in sub_field] , pad=(0,0), scrollable=True, key = "Columnmmm", size=(400,500))]]
+       _type= [[]]
+    else:
+       rr=[[sg.Column([[sg.Frame(sub, [[sg.Text(k), sg.InputText(isa_yaml['hart0'][csr][rvxlen][sub][k], key='-'+csr+'_'+sub+k+'-', tooltip=str(isa_yaml['hart0'][csr][rvxlen][sub][k])) ] for k in list(set(isa_yaml['hart0'][csr][rvxlen][sub].keys()) -set(['fields','type'])) ]) ]  for sub in sub_field] , pad=(0,0), scrollable=True, key = "Columnmmm", size=(400,500))]]
+       _type= [[]]
   return [[sg.Text(k), sg.InputText(isa_yaml['hart0'][csr][k], key='-'+csr+'_'+k+'-', tooltip=str(isa_yaml['hart0'][csr][k])) ] for k in list(set(isa_yaml['hart0'][csr].keys())-set(['rv32', 'rv64'])) ] + rr +_type
          
 
